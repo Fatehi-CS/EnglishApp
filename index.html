@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Fatehi's English Academy | A1 to C1 in 150 Days</title>
+  <script src="https://tailwindcss.com"></script>
+  <link href="https://cloudflare.com" rel="stylesheet">
+  <style>
+    @import url('https://googleapis.com');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; padding-bottom: 85px; }
+    .tab-content { display: none; animation: fadeIn 0.25s ease-in-out; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .word-new { background-color: #dbeafe; color: #1e40af; border-bottom: 2px solid #3b82f6; cursor: pointer; padding: 1px 4px; border-radius: 4px; }
+    .word-learning { background-color: #fef3c7; color: #92400e; border-bottom: 2px solid #f59e0b; cursor: pointer; padding: 1px 4px; border-radius: 4px; }
+    .word-known { cursor: pointer; padding: 1px 2px; }
+    .loader { border: 3px solid #e2e8f0; border-top: 3px solid #2563eb; border-radius: 50%; width: 22px; height: 22px; animation: spin 0.8s linear infinite; display: inline-block; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <header class="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white px-4 py-3.5 sticky top-0 z-40 shadow-md flex justify-between items-center">
+    <div>
+      <h1 class="font-extrabold text-base tracking-tight flex items-center gap-2">
+        <i class="fa-solid fa-graduation-cap text-yellow-300"></i> Fatehi's English Academy
+      </h1>
+      <p class="text-[11px] text-blue-100">A1 → C1 Master System • 150-Day Challenge</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <span id="headerLevelBadge" class="bg-white/20 backdrop-blur px-2.5 py-1 rounded-full text-xs font-bold">A1</span>
+      <button onclick="openSettings()" class="bg-white/15 hover:bg-white/25 p-2 rounded-full transition" title="API Settings">
+        <i class="fa-solid fa-gear text-sm"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-lg mx-auto p-4 space-y-4">
+
+    <section id="tab-dashboard" class="tab-content active space-y-4">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">150-Day Mastery Challenge</span>
+          <span class="text-xs font-bold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-fire text-orange-500"></i> Day <span id="dayCount">1</span>/150</span>
+        </div>
+        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-3">
+          <div id="dayProgressBar" class="bg-gradient-to-r from-blue-600 to-indigo-600 h-full rounded-full transition-all duration-500" style="width: 1%"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="bg-slate-50 p-2.5 rounded-xl">
+            <div id="statLevel" class="text-lg font-extrabold text-indigo-700">A1</div>
+            <div class="text-[11px] text-slate-500">Current Level</div>
+          </div>
+          <div class="bg-slate-50 p-2.5 rounded-xl">
+            <div id="statWords" class="text-lg font-extrabold text-emerald-600">0</div>
+            <div class="text-[11px] text-slate-500">Words Mastered</div>
+          </div>
+          <div class="bg-slate-50 p-2.5 rounded-xl">
+            <div id="statMistakes" class="text-lg font-extrabold text-rose-600">0</div>
+            <div class="text-[11px] text-slate-500">Grammar Fixes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="font-bold text-sm text-slate-800"><i class="fa-solid fa-list-check text-blue-600 mr-1"></i> Daily 3-Hour Institute Plan</h2>
+          <button onclick="completeDay()" class="text-xs bg-emerald-600 text-white px-3 py-1 rounded-lg font-semibold hover:bg-emerald-700">Complete Day +1</button>
+        </div>
+        <div class="space-y-2 text-sm">
+          <label class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+            <input type="checkbox" class="w-4 h-4 accent-blue-600 rounded"> <span>1h Busuu Grammar & Curriculum Lesson</span>
+          </label>
+          <label class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+            <input type="checkbox" class="w-4 h-4 accent-blue-600 rounded"> <span>1h LingQ Smart Reading & Listening</span>
+          </label>
+          <label class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+            <input type="checkbox" class="w-4 h-4 accent-blue-600 rounded"> <span>30m Speak AI Live Voice Conversation</span>
+          </label>
+          <label class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+            <input type="checkbox" class="w-4 h-4 accent-blue-600 rounded"> <span>30m ELSA Pronunciation & 5-Min Quick Review</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="startPlacementTest()" class="bg-indigo-50 border border-indigo-200 p-3.5 rounded-2xl text-left hover:bg-indigo-100 transition">
+          <i class="fa-solid fa-compass text-indigo-600 text-lg mb-1"></i>
+          <div class="font-bold text-xs text-indigo-950">Placement Test</div>
+          <div class="text-[11px] text-indigo-700">Find your CEFR level</div>
+        </button>
+        <button onclick="startQuickReview()" class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-left hover:bg-amber-100 transition">
+          <i class="fa-solid fa-bolt text-amber-600 text-lg mb-1"></i>
+          <div class="font-bold text-xs text-amber-950">5-Min Quick Review</div>
+          <div class="text-[11px] text-amber-700">Busuu Pro Flash Drill</div>
+        </button>
+      </div>
+
+      <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl p-4 shadow-sm flex justify-between items-center">
+        <div>
+          <h3 class="font-bold text-sm text-yellow-400"><i class="fa-solid fa-award mr-1"></i> Official Level Certificate</h3>
+          <p class="text-xs text-slate-300 mt-0.5">Generate certificate for <span class="font-semibold">Fatehi Alshami</span></p>
+        </div>
+        <button onclick="generateCertificate()" class="bg-yellow-400 text-slate-900 font-bold text-xs px-3.5 py-2 rounded-xl hover:bg-yellow-300">Download</button>
+      </div>
+      <canvas id="certCanvas" width="1000" height="700" class="hidden"></canvas>
+      <div id="dashboardDynamicArea" class="hidden bg-white rounded-2xl p-4 shadow-md border border-blue-200"></div>
+    </section>
+    <section id="tab-curriculum" class="tab-content space-y-4">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="font-bold text-base text-slate-800">Busuu CEFR Curriculum</h2>
+          <select id="curriculumLevel" onchange="updateLevel(this.value)" class="bg-blue-50 border border-blue-200 text-blue-800 font-bold text-xs rounded-lg px-2.5 py-1.5">
+            <option value="A1">Level A1 (Beginner)</option>
+            <option value="A2">Level A2 (Elementary)</option>
+            <option value="B1">Level B1 (Intermediate)</option>
+            <option value="B2">Level B2 (Upper-Inter)</option>
+            <option value="C1">Level C1 (Advanced)</option>
+          </select>
+        </div>
+        <div class="flex gap-2 mb-3">
+          <input id="customTopicInput" type="text" placeholder="Topic (e.g., Conditionals, Academic Verbs...)" class="flex-1 text-xs border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500">
+          <button onclick="generateLesson()" class="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-blue-700">Start Lesson</button>
+        </div>
+        <div class="flex flex-wrap gap-1.5">
+          <button onclick="quickTopic('Present Tenses & Sentence Structure')" class="text-[11px] bg-slate-100 px-2.5 py-1 rounded-full hover:bg-blue-100">Tenses</button>
+          <button onclick="quickTopic('Modal Verbs & Conditionals')" class="text-[11px] bg-slate-100 px-2.5 py-1 rounded-full hover:bg-blue-100">Conditionals</button>
+          <button onclick="quickTopic('Passive Voice & Reported Speech')" class="text-[11px] bg-slate-100 px-2.5 py-1 rounded-full hover:bg-blue-100">Passive Voice</button>
+          <button onclick="quickTopic('C1 Academic Connectors & Inversion')" class="text-[11px] bg-slate-100 px-2.5 py-1 rounded-full hover:bg-blue-100">C1 Inversion</button>
+        </div>
+      </div>
+
+      <div id="lessonContainer" class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hidden space-y-4"></div>
+
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+        <div class="flex justify-between items-center mb-2">
+          <h3 class="font-bold text-sm text-rose-700"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Grammar Mistake Review Bank</h3>
+          <button onclick="clearMistakes()" class="text-[11px] text-slate-400 underline">Clear</button>
+        </div>
+        <div id="mistakeBankList" class="text-xs text-slate-600 space-y-2">
+          <p class="text-slate-400 italic">Mistakes from lessons & chats will appear here automatically for review.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-speak" class="tab-content space-y-4">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="font-bold text-base text-slate-800">Speak Pro AI Voice Tutor</h2>
+          <button onclick="endChatSummary()" class="text-[11px] bg-indigo-100 text-indigo-800 font-bold px-2.5 py-1 rounded-lg">End & Evaluate</button>
+        </div>
+        <input id="roleplayScenario" type="text" value="University Scholarship Interview" placeholder="Custom Scenario (e.g., Airport, Debate, Doctor...)" class="w-full text-xs border border-slate-200 rounded-xl px-3 py-2 mb-3 bg-slate-50">
+        
+        <div id="chatBox" class="h-64 overflow-y-auto bg-slate-50 rounded-xl p-3 space-y-3 border border-slate-200 text-xs">
+          <div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tl-none max-w-[85%]">
+            Hello Fatehi! I'm your AI English Coach. Set any scenario above and speak or type to start. I will correct your grammar and upgrade your sentences to C1 level!
+          </div>
+        </div>
+
+        <div class="flex gap-2 mt-3">
+          <button id="micBtn" onclick="toggleVoiceChat()" class="bg-rose-600 text-white px-3.5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1 hover:bg-rose-700">
+            <i class="fa-solid fa-microphone"></i>
+          </button>
+          <input id="chatInput" type="text" placeholder="Type or speak in English..." class="flex-1 text-xs border border-slate-200 rounded-xl px-3 py-2">
+          <button onclick="sendChatMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold text-xs">Send</button>
+        </div>
+      </div>
+      <div id="chatSummaryBox" class="hidden bg-indigo-50 border border-indigo-200 rounded-2xl p-4 text-xs space-y-2"></div>
+    </section>
+    <section id="tab-elsa" class="tab-content space-y-4">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 space-y-3">
+        <div class="flex justify-between items-center">
+          <h2 class="font-bold text-base text-slate-800">ELSA Pronunciation Lab</h2>
+          <button onclick="generatePronunciationSentence()" class="text-xs bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg">New Sentence</button>
+        </div>
+
+        <div class="flex gap-1.5 overflow-x-auto pb-1">
+          <button onclick="loadPhoneticDrill('Peter Piper picked a big blue bowl of pasta.')" class="text-[11px] whitespace-nowrap bg-purple-50 text-purple-800 border border-purple-200 px-2.5 py-1 rounded-full font-semibold">Drill: P / B</button>
+          <button onclick="loadPhoneticDrill('Thirty-three thousand thinkers thought about this.')" class="text-[11px] whitespace-nowrap bg-purple-50 text-purple-800 border border-purple-200 px-2.5 py-1 rounded-full font-semibold">Drill: TH (θ/ð)</button>
+          <button onclick="loadPhoneticDrill('Very fine vintage violins value perfection.')" class="text-[11px] whitespace-nowrap bg-purple-50 text-purple-800 border border-purple-200 px-2.5 py-1 rounded-full font-semibold">Drill: V / F</button>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-center space-y-3">
+          <p id="targetSentence" class="font-bold text-sm text-slate-800 leading-relaxed">Technology empowers determined learners to overcome any financial barrier.</p>
+          <div class="flex justify-center gap-3">
+            <button onclick="speakText(document.getElementById('targetSentence').innerText)" class="bg-slate-800 text-white text-xs px-4 py-2 rounded-xl font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-volume-high"></i> Listen Native
+            </button>
+            <button id="elsaRecordBtn" onclick="recordPronunciation()" class="bg-emerald-600 text-white text-xs px-4 py-2 rounded-xl font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-microphone"></i> Record Voice
+            </button>
+          </div>
+        </div>
+
+        <div id="elsaResultBox" class="hidden bg-white border border-slate-200 rounded-xl p-3.5 space-y-2 text-xs"></div>
+      </div>
+    </section>
+
+    <section id="tab-library" class="tab-content space-y-4">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 space-y-3">
+        <div class="flex justify-between items-center">
+          <h2 class="font-bold text-base text-slate-800">LingQ Smart Reader</h2>
+          <button onclick="generateStory()" class="text-xs bg-blue-600 text-white font-bold px-3 py-1.5 rounded-lg">Generate Story</button>
+        </div>
+        <div class="flex gap-2">
+          <input id="importArticleInput" type="text" placeholder="Paste any English article/paragraph here..." class="flex-1 text-xs border border-slate-200 rounded-xl px-3 py-2">
+          <button onclick="importCustomText()" class="bg-slate-800 text-white text-xs font-bold px-3 py-2 rounded-xl">Import</button>
+        </div>
+        <div class="flex gap-3 text-[11px]">
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-blue-400 inline-block"></span> New</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-400 inline-block"></span> Learning</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded border border-slate-300 inline-block"></span> Known</span>
+        </div>
+        <div id="readerArea" class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm leading-7 text-slate-800">
+          Click "Generate Story" or paste any text above. Tap any word to translate it, change its mastery color, and save it to your flashcard bank!
+        </div>
+        <div id="wordInspector" class="hidden bg-blue-50 border border-blue-200 rounded-xl p-3 text-xs flex justify-between items-center"></div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 space-y-3">
+        <h2 class="font-bold text-base text-slate-800"><i class="fa-solid fa-pen-nib text-emerald-600 mr-1"></i> Grammarly Academic Writing Coach</h2>
+        <textarea id="essayInput" rows="4" placeholder="Write an essay, scholarship paragraph, or email here for C1 grading & correction..." class="w-full text-xs border border-slate-200 rounded-xl p-3 focus:outline-none focus:border-emerald-500"></textarea>
+        <button onclick="gradeEssay()" class="w-full bg-emerald-600 text-white font-bold text-xs py-2.5 rounded-xl hover:bg-emerald-700">Analyze & Upgrade to C1</button>
+        <div id="essayResult" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 text-xs space-y-2"></div>
+      </div>
+    </section>
+
+    <footer class="text-center text-[11px] text-slate-400 pt-2 pb-4">
+      Engineered & Built by <span class="font-semibold text-slate-600">Fatehi Abdulfattah Mohammed Ali Alshami</span>
+    </footer>
+  </main>
+
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-2 py-2 flex justify-around items-center z-40 shadow-lg">
+    <button onclick="switchTab('dashboard', this)" class="nav-btn text-blue-600 flex flex-col items-center text-[10px] font-bold">
+      <i class="fa-solid fa-house text-base mb-0.5"></i> Dashboard
+    </button>
+    <button onclick="switchTab('curriculum', this)" class="nav-btn text-slate-400 flex flex-col items-center text-[10px] font-semibold">
+      <i class="fa-solid fa-book-open text-base mb-0.5"></i> Busuu
+    </button>
+    <button onclick="switchTab('speak', this)" class="nav-btn text-slate-400 flex flex-col items-center text-[10px] font-semibold">
+      <i class="fa-solid fa-comments text-base mb-0.5"></i> Speak AI
+    </button>
+    <button onclick="switchTab('elsa', this)" class="nav-btn text-slate-400 flex flex-col items-center text-[10px] font-semibold">
+      <i class="fa-solid fa-microphone-lines text-base mb-0.5"></i> ELSA Lab
+    </button>
+    <button onclick="switchTab('library', this)" class="nav-btn text-slate-400 flex flex-col items-center text-[10px] font-semibold">
+      <i class="fa-solid fa-layer-group text-base mb-0.5"></i> LingQ/Write
+    </button>
+  </nav>
+
+  <div id="settingsModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-base text-slate-800"><i class="fa-solid fa-key text-blue-600 mr-1"></i> Free Gemini AI Engine</h3>
+        <button onclick="closeSettings()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <p class="text-xs text-slate-500">Enter your free Google Gemini API Key to unlock all AI lessons, voice tutor, pronunciation analysis, and essay grading.</p>
+      <input id="apiKeyInput" type="password" placeholder="Paste your API key here..." class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2.5">
+      <div id="apiTestStatus" class="text-xs font-semibold"></div>
+      <div class="flex gap-2">
+        <button onclick="testApiConnection()" class="flex-1 bg-slate-100 text-slate-800 font-bold text-xs py-2.5 rounded-xl hover:bg-slate-200">Test Connection</button>
+        <button onclick="saveApiKey()" class="flex-1 bg-blue-600 text-white font-bold text-xs py-2.5 rounded-xl hover:bg-blue-700">Save Key</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    let appState = JSON.parse(localStorage.getItem('fatehiAcademyState')) || {
+      apiKey: '', level: 'A1', day: 1, words: {}, mistakes: [], chatHistory: []
+    };
+
+    function saveState() {
+      localStorage.setItem('fatehiAcademyState', JSON.stringify(appState));
+      updateUIStats();
+    }
+
+    function updateUIStats() {
+      document.getElementById('headerLevelBadge').innerText = appState.level;
+      document.getElementById('statLevel').innerText = appState.level;
+      document.getElementById('curriculumLevel').value = appState.level;
+      document.getElementById('dayCount').innerText = appState.day;
+      document.getElementById('dayProgressBar').style.width = Math.min(100, (appState.day / 150) * 100) + '%';
+      const knownCount = Object.values(appState.words).filter(v => v === 'known').length;
+      document.getElementById('statWords').innerText = knownCount;
+      document.getElementById('statMistakes').innerText = appState.mistakes.length;
+      renderMistakeBank();
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+      document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('text-blue-600', 'font-bold'); b.classList.add('text-slate-400', 'font-semibold'); });
+      btn.classList.remove('text-slate-400', 'font-semibold');
+      btn.classList.add('text-blue-600', 'font-bold');
+    }
+
+    function openSettings() { document.getElementById('apiKeyInput').value = appState.apiKey; document.getElementById('settingsModal').classList.remove('hidden'); }
+    function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
+    function saveApiKey() {
+      appState.apiKey = document.getElementById('apiKeyInput').value.trim(); saveState();
+      document.getElementById('apiTestStatus').innerHTML = '<span class="text-emerald-600">Saved successfully!</span>';
+      setTimeout(closeSettings, 800);
+    }
+
+    async function callGemini(promptText) {
+      if (!appState.apiKey) { openSettings(); throw new Error('Please enter your Google Gemini API Key first.'); }
+      const url = `https://googleapis.com{appState.apiKey}`;
+      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || 'API Connection Failed');
+      return data.candidates?.?.content?.parts?.?.text || '';
+    }
+
+    async function testApiConnection() {
+      const status = document.getElementById('apiTestStatus');
+      const tempKey = document.getElementById('apiKeyInput').value.trim();
+      if (!tempKey) return status.innerHTML = '<span class="text-rose-600">Please paste a key first.</span>';
+      appState.apiKey = tempKey; status.innerHTML = '<span class="text-blue-600">Testing connection...</span>';
+      try {
+        const reply = await callGemini('Reply with only the word: Connected!');
+        status.innerHTML = `<span class="text-emerald-600"><i class="fa-solid fa-circle-check"></i> Success: ${reply}</span>`; saveState();
+      } catch (err) { status.innerHTML = `<span class="text-rose-600">Error: ${err.message}</span>`; }
+    }
+
+    function completeDay() { if (appState.day < 150) { appState.day++; saveState(); alert('Great job Fatehi! Day ' + appState.day + ' unlocked.'); } }
+    function updateLevel(lvl) { appState.level = lvl; saveState(); }
+
+    async function startPlacementTest() {
+      const box = document.getElementById('dashboardDynamicArea'); box.classList.remove('hidden');
+      box.innerHTML = '<div class="text-center py-4"><div class="loader"></div><p class="text-xs mt-2">Generating CEFR Placement Test...</p></div>';
+      try {
+        let raw = await callGemini(`Create a 5-question English CEFR placement test (ranging from A1 to C1 difficulty). Return ONLY valid JSON array: [{"q":"question","options":["A","B","C","D"],"answer":0,"level":"A2"}]`);
+        const questions = JSON.parse(raw.replace(/```json|```/g, '').trim());
+        let html = `<h3 class="font-bold text-sm mb-3 text-indigo-800">CEFR Placement Test</h3><div class="space-y-3 text-xs">`;
+        questions.forEach((item, idx) => {
+          html += `<div class="p-2.5 bg-slate-50 rounded-xl"><p class="font-bold mb-1.5">${idx+1}. ${item.q}</p>`;
+          item.options.forEach((opt, oIdx) => { html += `<label class="block py-1"><input type="radio" name="pt_${idx}" value="${oIdx}" data-ans="${item.answer}"> ${opt}</label>`; });
+          html += `</div>`;
+        });
+        html += `<button onclick="gradePlacementTest(${questions.length})" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl mt-2">Submit & Set My Level</button></div>`;
+        box.innerHTML = html;
+      } catch (e) { box.innerHTML = `<p class="text-xs text-rose-600">${e.message}</p>`; }
+    }
+
+    function gradePlacementTest(total) {
+      let score = 0;
+      for (let i = 0; i < total; i++) { const sel = document.querySelector(`input[name="pt_${i}"]:checked`); if (sel && sel.value === sel.dataset.ans) score++; }
+      const assigned = ['A1', 'A2', 'B1', 'B2', 'C1'][Math.min(4, score)]; updateLevel(assigned);
+      document.getElementById('dashboardDynamicArea').innerHTML = `<div class="text-center p-3"><p class="text-sm font-bold text-emerald-700">Score: ${score}/${total} — Your Level is set to ${assigned}!</p></div>`;
+    }
+
+    async function startQuickReview() {
+      const box = document.getElementById('dashboardDynamicArea'); box.classList.remove('hidden');
+      box.innerHTML = '<div class="text-center py-4"><div class="loader"></div><p class="text-xs mt-2">Preparing 5-Min Quick Review...</p></div>';
+      try {
+        const wordsList = Object.keys(appState.words).slice(0, 10).join(', ') || 'essential academic verbs';
+        const res = await callGemini(`Create a fast 5-minute active recall quiz for level ${appState.level} focusing on: ${wordsList}. Format clearly in clean HTML with bold questions and hidden answers using <details><summary>Show Answer</summary>...</details>.`);
+        box.innerHTML = `<h3 class="font-bold text-sm text-amber-800 mb-2">⚡ 5-Minute Quick Review</h3><div class="text-xs space-y-2">${res.replace(/```html|```/g, '')}</div>`;
+      } catch (e) { box.innerHTML = `<p class="text-xs text-rose-600">${e.message}</p>`; }
+    }
+
+    function generateCertificate() {
+      const canvas = document.getElementById('certCanvas'); const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 1000, 700);
+      ctx.strokeStyle = '#1d4ed8'; ctx.lineWidth = 18; ctx.strokeRect(30, 30, 940, 640);
+      ctx.strokeStyle = '#eab308'; ctx.lineWidth = 4; ctx.strokeRect(52, 52, 896, 596);
+      ctx.fillStyle = '#1e3a8a'; ctx.font = 'bold 42px sans-serif'; ctx.textAlign = 'center'; ctx.fillText("FATEHI'S ENGLISH ACADEMY", 500, 150);
+      ctx.fillStyle = '#475569'; ctx.font = '24px sans-serif'; ctx.fillText("CERTIFICATE OF ACHIEVEMENT", 500, 210); ctx.fillText("This certifies that", 500, 290);
+      ctx.fillStyle = '#0f172a'; ctx.font = 'bold 38px sans-serif'; ctx.fillText("Fatehi Abdulfattah Mohammed Ali Alshami", 500, 360);
+      ctx.fillStyle = '#334155'; ctx.font = '24px sans-serif'; ctx.fillText(`Has successfully mastered CEFR English Level ${appState.level}`, 500, 440);
+      ctx.fillText(`Day ${appState.day} of the 150-Day Intensive Program`, 500, 490);
+      ctx.fillStyle = '#1d4ed8'; ctx.font = 'bold 20px sans-serif'; ctx.fillText(`Issued on: ${new Date().toLocaleDateString()}`, 500, 580);
+      const link = document.createElement('a'); link.download = `Fatehi_English_Certificate_${appState.level}.png`; link.href = canvas.toDataURL(); link.click();
+    }
+
+    function quickTopic(t) { document.getElementById('customTopicInput').value = t; generateLesson(); }
+    async function generateLesson() {
+      const topic = document.getElementById('customTopicInput').value.trim() || 'Core Grammar & Vocabulary';
+      const box = document.getElementById('lessonContainer'); box.classList.remove('hidden');
+      box.innerHTML = '<div class="text-center py-6"><div class="loader"></div><p class="text-xs mt-2">Building Busuu Pro Lesson...</p></div>';
+      try {
+        const html = await callGemini(`Create a structured English lesson for CEFR Level ${appState.level} on "${topic}". Return clean HTML (no markdown backticks) with: 1) Clear Grammar Explanation with Arabic translation hints, 2) 5 Key Vocabulary words with examples, 3) 3 Interactive Quiz questions using <details><summary class="text-blue-600 font-bold cursor-pointer">Check Answer</summary>...</details>.`);
+        box.innerHTML = `<div class="prose text-xs leading-relaxed space-y-2">${html.replace(/```html|```/g, '')}</div>`;
+      } catch (e) { box.innerHTML = `<p class="text-xs text-rose-600">${e.message}</p>`; }
+    }
+    function addMistake(mistakeText) { appState.mistakes.unshift(mistakeText); if (appState.mistakes.length > 20) appState.mistakes.pop(); saveState(); }
+    function clearMistakes() { appState.mistakes = []; saveState(); }
+    function renderMistakeBank() {
+      const list = document.getElementById('mistakeBankList');
+      if (!appState.mistakes.length) return list.innerHTML = '<p class="text-slate-400 italic">No recorded mistakes yet.</p>';
+      list.innerHTML = appState.mistakes.map(m => `<div class="p-2 bg-rose-50 border border-rose-100 rounded-lg text-rose-900">${m}</div>`).join('');
+    }
+
+    async function sendChatMessage() {
+      const input = document.getElementById('chatInput'); const msg = input.value.trim(); if (!msg) return; input.value = '';
+      const chatBox = document.getElementById('chatBox');
+      chatBox.innerHTML += `<div class="bg-slate-200 text-slate-900 p-3 rounded-2xl rounded-tr-none max-w-[85%] ml-auto">${msg}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight; appState.chatHistory.push('User: ' + msg);
+      const scenario = document.getElementById('roleplayScenario').value;
+      try {
+        let raw = await callGemini(`You are an English tutor in a roleplay scenario: "${scenario}" for a ${appState.level} student named Fatehi. Respond naturally to: "${msg}". Return ONLY valid JSON: {"reply":"your conversational response","correction":"grammar fix if needed or 'Perfect!'","c1Upgrade":"how a native C1 speaker would say the user's sentence"}`);
+        const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
+        if (data.correction && data.correction !== 'Perfect!') addMistake(`"${msg}" → ${data.correction}`);
+        chatBox.innerHTML += `<div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tl-none max-w-[88%] space-y-1.5"><p>${data.reply}</p><div class="bg-blue-800/70 p-2 rounded-lg text-[11px] space-y-1"><div><span class="text-amber-300 font-bold">Fix:</span> ${data.correction}</div><div><span class="text-emerald-300 font-bold">C1 Upgrade:</span> ${data.c1Upgrade}</div></div><button onclick="speakText('${data.reply.replace(/'/g, "\\'")}')" class="text-[10px] underline text-blue-200"><i class="fa-solid fa-volume-high"></i> Listen</button></div>`;
+        chatBox.scrollTop = chatBox.scrollHeight; speakText(data.reply);
+      } catch (e) { chatBox.innerHTML += `<div class="text-rose-600 text-[11px]">Error: ${e.message}</div>`; }
+    }
+
+    function toggleVoiceChat() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) return alert('Speech recognition not supported in this browser.');
+      const rec = new SpeechRec(); rec.lang = 'en-US';
+      const btn = document.getElementById('micBtn'); btn.classList.add('animate-pulse');
+      rec.onresult = (e) => { document.getElementById('chatInput').value = e.results.transcript; sendChatMessage(); };
+      rec.onend = () => btn.classList.remove('animate-pulse'); rec.start();
+    }
+
+    async function endChatSummary() {
+      const box = document.getElementById('chatSummaryBox'); box.classList.remove('hidden'); box.innerHTML = '<div class="loader"></div> Analyzing conversation...';
+      try {
+        const res = await callGemini(`Evaluate this student's English conversation history and list 3 specific areas to improve:\n${appState.chatHistory.join('\n')}`);
+        box.innerHTML = `<h4 class="font-bold text-indigo-900">📊 Post-Chat Evaluation Summary</h4><div>${res.replace(/\n/g, '<br>')}</div>`;
+      } catch (e) { box.innerHTML = e.message; }
+    }
+
+    function speakText(text) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.92; window.speechSynthesis.speak(u); }
+    function loadPhoneticDrill(text) { document.getElementById('targetSentence').innerText = text; }
+    async function generatePronunciationSentence() {
+      try { const s = await callGemini(`Generate ONE challenging English sentence for CEFR level ${appState.level} pronunciation practice. Return ONLY the sentence.`); document.getElementById('targetSentence').innerText = s.trim(); } catch (e) { alert(e.message); }
+    }
+
+    function recordPronunciation() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) return alert('Voice recognition not supported in this browser.');
+      const rec = new SpeechRec(); rec.lang = 'en-US';
+      const btn = document.getElementById('elsaRecordBtn'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Listening...';
+      rec.onresult = async (e) => {
+        const spoken = e.results.transcript.toLowerCase(); const target = document.getElementById('targetSentence').innerText;
+        const targetWords = target.replace(/[^\w\s]/g, '').split(/\s+/); let matched = 0;
+        const coloredHtml = targetWords.map(w => { if (spoken.includes(w.toLowerCase())) { matched++; return `<span class="text-emerald-600 font-bold">${w}</span>`; } return `<span class="text-rose-600 font-bold underline">${w}</span>`; }).join(' ');
+        const score = Math.round((matched / targetWords.length) * 100);
+        const resBox = document.getElementById('elsaResultBox'); resBox.classList.remove('hidden');
+        resBox.innerHTML = `<div class="flex justify-between font-bold"><span>Accuracy Score:</span><span class="text-blue-600">${score}%</span></div><p class="text-sm leading-relaxed">${coloredHtml}</p><p class="text-slate-500">You said: "${spoken}"</p><div id="syllableTips" class="pt-2 border-t border-slate-100 text-indigo-800"><div class="loader"></div> Getting ELSA Pro syllable breakdown...</div>`;
+        try { const tips = await callGemini(`Break down the hardest words in "${target}" into syllables and give quick mouth/tongue pronunciation tips for an Arabic speaker.`); document.getElementById('syllableTips').innerHTML = tips.replace(/\n/g, '<br>'); } catch (err) { document.getElementById('syllableTips').innerHTML = ''; }
+      };
+      rec.onend = () => btn.innerHTML = '<i class="fa-solid fa-microphone"></i> Record Voice'; rec.start();
+    }
+
+    async function generateStory() {
+      const area = document.getElementById('readerArea'); area.innerHTML = '<div class="text-center py-4"><div class="loader"></div></div>';
+      try { const story = await callGemini(`Write an engaging 120-word English story or academic paragraph tailored for CEFR Level ${appState.level}. Return ONLY the English text.`); renderInteractiveText(story.trim()); } catch (e) { area.innerHTML = e.message; }
+    }
+    function importCustomText() { const txt = document.getElementById('importArticleInput').value.trim(); if (txt) renderInteractiveText(txt); }
+    function renderInteractiveText(text) {
+      const html = text.split(/\s+/).map(w => {
+        const clean = w.toLowerCase().replace(/[^a-z]/g, ''); if (!clean) return w;
+        const status = appState.words[clean] || 'new';
+        const cls = status === 'known' ? 'word-known' : (status === 'learning' ? 'word-learning' : 'word-new');
+        return `<span onclick="inspectWord('${clean}', '${w.replace(/'/g, '')}')" class="${cls}">${w}</span>`;
+      }).join(' ');
+      document.getElementById('readerArea').innerHTML = html;
+    }
+
+    async function inspectWord(clean, display) {
+      const box = document.getElementById('wordInspector'); box.classList.remove('hidden'); box.innerHTML = `<span>Translating <b>${display}</b>...</span>`;
+      try {
+        const meaning = await callGemini(`Give the Arabic meaning and a short example for the English word "${clean}" in one brief line.`);
+        box.innerHTML = `<div class="flex-1 pr-2"><b>${display}:</b> ${meaning}</div><div class="flex gap-1"><button onclick="setWordStatus('${clean}', 'learning')" class="bg-amber-400 text-amber-950 px-2 py-1 rounded font-bold">Learn</button><button onclick="setWordStatus('${clean}', 'known')" class="bg-emerald-600 text-white px-2 py-1 rounded font-bold">Known</button></div>`;
+      } catch (e) { box.innerHTML = e.message; }
+    }
+    function setWordStatus(clean, status) { appState.words[clean] = status; saveState(); renderInteractiveText(document.getElementById('readerArea').innerText); }
+
+    async function gradeEssay() {
+      const essay = document.getElementById('essayInput').value.trim(); if (!essay) return;
+      const box = document.getElementById('essayResult'); box.classList.remove('hidden'); box.innerHTML = '<div class="loader"></div> Grading & upgrading to C1...';
+      try {
+        const res = await callGemini(`Act as Grammarly Pro & an IELTS/C1 examiner. Analyze this text:\n"${essay}"\nProvide: 1) Estimated CEFR Level, 2) Key grammar/vocabulary corrections, 3) A polished C1 Academic rewrite.`);
+        box.innerHTML = res.replace(/\n/g, '<br>');
+      } catch (e) { box.innerHTML = e.message; }
+    }
+
+    updateUIStats();
+  </script>
+</body>
+</html>
